@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 
 namespace EveIndyCalc
 {
@@ -19,6 +20,7 @@ namespace EveIndyCalc
         private const int HTCLIENT = 1;
         private const int WM_NCHITTEST = 0x0084;
 
+        private List<Material> currentMaterials;
         private List<Blueprint> allBlueprints = new();
 
         public MainWindow()
@@ -89,7 +91,7 @@ namespace EveIndyCalc
                 : Visibility.Hidden;
         }
 
-        private void BlueprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void BlueprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (BlueprintList.SelectedItem is Blueprint bp)
             {
@@ -114,6 +116,21 @@ namespace EveIndyCalc
                 MaterialsList.ItemsSource = materials;
 
                 BlueprintIcon.Source = new BitmapImage(new Uri(bp.ItemconUrl));
+
+                var summaryList = materials.Select(m => new MaterialSummary
+                {
+                    MaterialName = m.MaterialName,
+                    TypeID = m.MaterialTypeID,
+                    Quantity = m.Quantity,
+                    BuyPrice = 0,
+                    SellPrice = 0
+                }).ToList();
+
+                SummaryList.ItemsSource = summaryList;
+                TotalPriceText.Text = " - ";
+
+                var estimated = await PriceProvider.GetEstimatedItemValueAsync(bp.ProductID);
+                ItemPriceText.Text = $" {estimated:N2} ISK";
             }
         }
 
@@ -169,6 +186,32 @@ namespace EveIndyCalc
             }
 
             return IntPtr.Zero;
+        }
+
+        private async void FetchPrices_Click(object sender, RoutedEventArgs e)
+        {
+            if (SummaryList.ItemsSource is not IEnumerable<MaterialSummary> summaries)
+                return;
+
+            FetchPricesButton.IsEnabled = false;
+            FetchPricesButton.Content = "Fetching...";
+
+            foreach (var item in summaries)
+            {
+                var (buy, sell) = await PriceProvider.GetPricesAsync(item.TypeID);
+                item.BuyPrice = buy;
+                item.SellPrice = sell;
+            }
+
+            SummaryList.Items.Refresh();
+
+            FetchPricesButton.IsEnabled = true;
+            FetchPricesButton.Content = "Fetch Prices";
+
+            decimal totalBuy = summaries.Sum(x => x.BuyPrice * x.Quantity);
+            decimal totalSell = summaries.Sum(x => x.SellPrice * x.Quantity);
+
+            TotalPriceText.Text = $"Total: Buy - {totalBuy:N2} ISK  |  Sell - {totalSell:N2} ISK";
         }
     }
 }

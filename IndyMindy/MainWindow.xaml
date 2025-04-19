@@ -2,6 +2,7 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="EveIndyCalc.MainWindow" Title="EVE Industry Calculator" Height="600" Width="900" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <!-- Resources -->
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <DropShadowEffect x:Key="DropShadow" Color="Black" BlurRadius="15" ShadowDepth="0" Opacity="0.5"/>
         <Style x:Key="EveButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#222"/>
@@ -76,7 +77,15 @@
                 </Border>
             </Grid>
             <!-- Details Panel -->
-            <Border Background="#CC000000" CornerRadius="6" Margin="270,88,10,10" Padding="0" BorderBrush="#555" BorderThickness="1">
+            <Border Background="#CC000000" CornerRadius="6" Margin="270,88,10,10" Padding="0" BorderBrush="#555" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-0.006"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Border.RenderTransform>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
                         <Image x:Name="BlueprintIcon"
@@ -88,6 +97,8 @@
                             <TextBlock x:Name="NameText" Foreground="White" Margin="0,0,0,6"/>
                             <TextBlock Text="Production Time:" Foreground="LightGray"/>
                             <TextBlock x:Name="ProdTimeText" Foreground="White"/>
+                            <TextBlock Text="Estimated value:" Foreground="LightGray"/>
+                            <TextBlock x:Name="ItemPriceText" Foreground="White"/>
                         </StackPanel>
                     </StackPanel>
                     <Border Background="#222" Padding="6" CornerRadius="6,6,0,0">
@@ -101,7 +112,7 @@
                         </Grid>
                     </Border>
                     <!-- Scrollable List -->
-                    <ListView x:Name="MaterialsList" Height="250" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#444" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
+                    <ListView x:Name="MaterialsList" Height="250" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
                         <ListView.Resources>
                             <Style TargetType="{x:Type GridViewColumnHeader}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -125,22 +136,29 @@
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="30"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="160"/>
                                     </Grid.ColumnDefinitions>
+                                    <CheckBox Grid.Column="0"
+                                        IsChecked="{Binding BuildInsteadOfBuy, Mode=TwoWay}"
+                                        VerticalAlignment="Center"
+                                        Margin="2"
+                                        ToolTip="Build instead of buy"
+                                        Visibility="{Binding IsBuildable, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     <Image Source="{Binding IconUrl}"
                                         Width="24" Height="24"
                                         Margin="2"
                                         VerticalAlignment="Center"
-                                        Grid.Column="0"/>
+                                        Grid.Column="1"/>
                                     <TextBlock Text="{Binding MaterialName}"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
                                         Foreground="White"/>
                                     <TextBlock Text="{Binding Quantity}"
-                                        Grid.Column="2"
+                                        Grid.Column="3"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
                                         Foreground="White"/>
@@ -148,6 +166,103 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <!-- Blueprint Summary Section -->
+
+                    <Border Background="#333" Padding="6">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Blueprint Summary" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
+                            <Button x:Name="FetchPricesButton"
+                                Content="Fetch Prices"
+                                Width="120"
+                                Height="20"
+                                HorizontalAlignment="Left"
+                                Click="FetchPrices_Click"
+                                Style="{StaticResource EveButtonStyle}" Grid.Column="1"/>
+                        </Grid>
+                    </Border>
+                    <Border Background="#333" Padding="6">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Material" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
+                            <TextBlock Text="Quantity" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
+                            <TextBlock Text="Buy Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
+                            <TextBlock Text="Sell Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3"/>
+                        </Grid>
+                    </Border>
+                    <Border Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <!-- Stretch SummaryList -->
+                                <RowDefinition Height="Auto" />
+                                <!-- ISK total -->
+                            </Grid.RowDefinitions>
+                            <ListView x:Name="SummaryList"
+                                 FontSize="11"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Foreground="White"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 VerticalAlignment="Stretch"
+                                 Grid.Row="0">
+                                <ListView.Resources>
+                                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Height" Value="0"/>
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Padding" Value="4"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#444"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}" Width="140"/>
+                                        <GridViewColumn Header="Qty" DisplayMemberBinding="{Binding Quantity}" Width="80"/>
+                                        <GridViewColumn Header="Buy Price" Width="100">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding BuyPrice, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+
+                                        <GridViewColumn Header="Sell Price" Width="100">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding SellPrice, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <TextBlock x:Name="TotalPriceText"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Foreground="LightGray"
+                                Margin="0,6,0,0"
+                                Grid.Row="1"
+                                Text="Total: Buy - 0 ISK | Sell - 0 ISK"/>
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </Border>
         </Grid>
