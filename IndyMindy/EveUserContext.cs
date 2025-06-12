@@ -23,6 +23,9 @@ namespace IndyMindy
         public long CorporationID { get; set; }
 
         public bool IsLoggedIn => !string.IsNullOrEmpty(AccessToken) && TokenExpiration > DateTime.UtcNow;
+
+        //-----------
+        public ProductionPlanner Planner { get; set; } = new();
     }
 
     public static class SessionManager
