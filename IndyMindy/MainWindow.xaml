@@ -11,8 +11,6 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="BorderBrush" Value="#555"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -91,7 +89,7 @@
                             VerticalAlignment="Center"
                             IsHitTestVisible="False"
                             FontStyle="Italic"
-                            Visibility="Visible"/>   
+                            Visibility="Visible"/>
                     </Grid>
                 </StackPanel>
                 <!-- Blueprint List -->
@@ -109,30 +107,47 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </Border.RenderTransform>
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
-                        <Image x:Name="BlueprintIcon"
-                            Width="64"
-                            Height="64"
-                            Margin="0,0,0,10"
-                            HorizontalAlignment="Left"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="110" />
+                        <!-- Materials -->
+                        <RowDefinition Height="30" />
+                        <!-- Splitter -->
+                        <RowDefinition Height="300" />
+                        <RowDefinition Height="30" />
+                        <!-- Materials -->
+                        <RowDefinition Height="30" />
+                        <!-- Splitter -->
+                        <RowDefinition Height="200" />
+                        <!-- Summary -->
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <!-- Left Column -->
-                            <StackPanel Grid.Column="0">
+                            <StackPanel Grid.Column="0" Margin="10,0,20,0 ">
                                 <TextBlock x:Name="NameText" Foreground="White" Margin="0,0,0,6"/>
+                                <Image x:Name="BlueprintIcon"
+                                    Width="64"
+                                    Height="64"
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"/>    
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="10,0,20,0 ">
                                 <TextBlock Text="Production Time:" Foreground="LightGray"/>
-                                <TextBlock x:Name="ProdTimeText" Foreground="White"/>
-                                <TextBlock Text="Estimated Unit Value:" Foreground="LightGray"/>
-                                <TextBlock x:Name="ItemPriceText" Foreground="White"/>
+                                <TextBlock x:Name="ProdTimeText" Foreground="White" Margin="0,0,0,0"/>
+                                <TextBlock Text="Estimated Unit Value:" Foreground="LightGray" Margin="0,10,0,0"/>
+                                <TextBlock x:Name="ItemPriceText" Foreground="White" />
                             </StackPanel>
 
                             <!-- Right Column (only if Quantity > 1) -->
-                            <StackPanel Grid.Column="1">
+                            <StackPanel Grid.Column="2">
                                 <TextBlock x:Name="OutputQuantityLabel" Text="Output Quantity:" Foreground="LightGray" Visibility="Collapsed"/>
                                 <TextBlock x:Name="OutputQuantityText" Foreground="White" Visibility="Collapsed"/>
                                 <TextBlock x:Name="ItemTotalValueLabel" Text="Estimated Total Value:" Foreground="LightGray" Visibility="Collapsed" Margin="0,10,0,0"/>
@@ -140,7 +155,7 @@
                             </StackPanel>
                         </Grid>
                     </StackPanel>
-                    <Border Background="#222" Padding="6" CornerRadius="6,6,0,0">
+                    <Border Grid.Row="1" Background="#222" Padding="6" CornerRadius="6,6,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -151,7 +166,7 @@
                         </Grid>
                     </Border>
                     <!-- Scrollable List -->
-                    <ListView x:Name="MaterialsList" Height="250" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
+                    <ListView Grid.Row="2" x:Name="MaterialsList" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
                         <ListView.Resources>
                             <Style TargetType="{x:Type GridViewColumnHeader}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -191,20 +206,17 @@
                                         IsChecked="{Binding BuildInsteadOfBuy, Mode=TwoWay}"
                                         VerticalAlignment="Center"
                                         Click="BuildInsteadOfBuy_Click"
-                                        Margin="2"
                                         ToolTip="Build instead of buy"
                                         Visibility="{Binding IsBuildable, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     <Image Source="{Binding IconUrl}"
                                         Width="24" Height="24"
-                                        Margin="2"
                                         VerticalAlignment="Center"
                                         Grid.Column="1"/>
                                     <TextBlock Text="{Binding MaterialName}"
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
-                                        Foreground="White"
-                                        Margin="2"/>
+                                        Foreground="White"/>
                                     <TextBlock Text="{Binding DisplayQuantity}"
                                         Grid.Column="3"
                                         VerticalAlignment="Center"
@@ -216,7 +228,7 @@
                     </ListView>
                     <!-- Blueprint Summary Section -->
 
-                    <Border Background="#333" Padding="6">
+                    <Border Grid.Row="3" Background="#333" Padding="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -232,7 +244,7 @@
                                 Style="{StaticResource EveButtonStyle}" Grid.Column="1"/>
                         </Grid>
                     </Border>
-                    <Border Background="#333" Padding="6">
+                    <Border Grid.Row="4" Background="#333" Padding="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="140"/>
@@ -246,7 +258,7 @@
                             <TextBlock Text="Sell Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3"/>
                         </Grid>
                     </Border>
-                    <Border Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
+                    <Border Grid.Row="5" Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="35*"/>
@@ -258,13 +270,15 @@
                                 <RowDefinition Height="Auto" />
                                 <!-- ISK total -->
                             </Grid.RowDefinitions>
+                            
+                            
+                            
                             <ListView x:Name="SummaryList"
                                 FontSize="11"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Foreground="White"
-                                Height="400"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,33">
                                 <ListView.Resources>
                                     <Style TargetType="{x:Type GridViewColumnHeader}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -323,12 +337,20 @@
                                 FontSize="12"
                                 FontWeight="Bold"
                                 Foreground="LightGray"
-                                Margin="0,6,0,0"
-                                Grid.Row="1"
-                                Text="Total: Buy - 0 ISK | Sell - 0 ISK" Grid.ColumnSpan="2"/>
+                                Margin="0,310,0,16"
+                                Text="Total: Buy - 0 ISK | Sell - 0 ISK" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
+                                <TextBlock.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleY="-1"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
                         </Grid>
                     </Border>
-                </StackPanel>
+                </Grid>
             </Border>
         </Grid>
     </Border>
