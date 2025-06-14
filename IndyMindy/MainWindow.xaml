@@ -109,261 +109,272 @@
                 </Border.RenderTransform>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="110" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" MinHeight="100" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="5"/>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" MinHeight="100" />
-                     </Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="110" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" MinHeight="100" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="10,0,20,0 ">
+                                    <TextBlock x:Name="NameText" Foreground="White" Margin="0,0,0,6"/>
+                                    <Image x:Name="BlueprintIcon"
+                                        Width="64"
+                                        Height="64"
+                                        Margin="0,0,0,0"
+                                        HorizontalAlignment="Left"/>
+                                </StackPanel>
 
-                            <StackPanel Grid.Column="0" Margin="10,0,20,0 ">
-                                <TextBlock x:Name="NameText" Foreground="White" Margin="0,0,0,6"/>
-                                <Image x:Name="BlueprintIcon"
-                                    Width="64"
-                                    Height="64"
-                                    Margin="0,0,0,0"
-                                    HorizontalAlignment="Left"/>    
-                            </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="10,0,20,0 ">
+                                    <TextBlock Text="Production Time:" Foreground="LightGray"/>
+                                    <TextBlock x:Name="ProdTimeText" Foreground="White" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Estimated Unit Value:" Foreground="LightGray" Margin="0,10,0,0"/>
+                                    <TextBlock x:Name="ItemPriceText" Foreground="White" />
+                                </StackPanel>
 
-                            <StackPanel Grid.Column="1" Margin="10,0,20,0 ">
-                                <TextBlock Text="Production Time:" Foreground="LightGray"/>
-                                <TextBlock x:Name="ProdTimeText" Foreground="White" Margin="0,0,0,0"/>
-                                <TextBlock Text="Estimated Unit Value:" Foreground="LightGray" Margin="0,10,0,0"/>
-                                <TextBlock x:Name="ItemPriceText" Foreground="White" />
-                            </StackPanel>
+                                <!-- Right Column (only if Quantity > 1) -->
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock x:Name="OutputQuantityLabel" Text="Output Quantity:" Foreground="LightGray" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="OutputQuantityText" Foreground="White" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="ItemTotalValueLabel" Text="Estimated Total Value:" Foreground="LightGray" Visibility="Collapsed" Margin="0,10,0,0"/>
+                                    <TextBlock x:Name="ItemTotalValueText" Foreground="White" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <Border Grid.Row="1" Background="#222" Padding="6" CornerRadius="6,6,0,0" Height="Auto">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="160"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Material" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <TextBlock Text="Quantity" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
+                            </Grid>
+                        </Border>
+                        <!-- Scrollable List -->
+                        <ListView Grid.Row="2" x:Name="MaterialsList" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="Height" Value="0"/>
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 
-                            <!-- Right Column (only if Quantity > 1) -->
-                            <StackPanel Grid.Column="2">
-                                <TextBlock x:Name="OutputQuantityLabel" Text="Output Quantity:" Foreground="LightGray" Visibility="Collapsed"/>
-                                <TextBlock x:Name="OutputQuantityText" Foreground="White" Visibility="Collapsed"/>
-                                <TextBlock x:Name="ItemTotalValueLabel" Text="Estimated Total Value:" Foreground="LightGray" Visibility="Collapsed" Margin="0,10,0,0"/>
-                                <TextBlock x:Name="ItemTotalValueText" Foreground="White" Visibility="Collapsed"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                    <Border Grid.Row="1" Background="#222" Padding="6" CornerRadius="6,6,0,0" Height="Auto">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="160"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Material" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
-                            <TextBlock Text="Quantity" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
-                        </Grid>
-                    </Border>
-                    <!-- Scrollable List -->
-                    <ListView Grid.Row="2" x:Name="MaterialsList" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
-                        <ListView.Resources>
-                            <Style TargetType="{x:Type GridViewColumnHeader}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="Height" Value="0"/>
-                            </Style>
-                        </ListView.Resources>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Style.Triggers>
+                                        <!-- Grey out item if it is being built -->
+                                        <DataTrigger Binding="{Binding BuildInsteadOfBuy}" Value="True">
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                        </DataTrigger>
 
-                                <Style.Triggers>
-                                    <!-- Grey out item if it is being built -->
-                                    <DataTrigger Binding="{Binding BuildInsteadOfBuy}" Value="True">
-                                        <Setter Property="Opacity" Value="0.5"/>
-                                    </DataTrigger>
-
-                                    <!-- Hover effect -->
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#444"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="{Binding Depth, Converter={StaticResource DepthToMarginConverter}}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="30"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="160"/>
-                                    </Grid.ColumnDefinitions>
-                                    <CheckBox Grid.Column="0"
-                                        IsChecked="{Binding BuildInsteadOfBuy, Mode=TwoWay}"
-                                        VerticalAlignment="Center"
-                                        Click="BuildInsteadOfBuy_Click"
-                                        ToolTip="Build instead of buy"
-                                        Visibility="{Binding IsBuildable, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    <Image Source="{Binding IconUrl}"
-                                        Width="24" Height="24"
-                                        VerticalAlignment="Center"
-                                        Grid.Column="1"/>
-                                    <TextBlock Text="{Binding MaterialName}"
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                                        Foreground="White"/>
-                                    <TextBlock Text="{Binding DisplayQuantity}"
-                                        Grid.Column="3"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                                        Foreground="White"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <!-- Blueprint Summary Section -->
-                    <Border Grid.Row="3" Background="#333" Padding="6">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="120"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Blueprint Summary" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
-                            <Button x:Name="FetchPricesButton"
-                                Content="Fetch Prices"
-                                Width="120"
-                                Height="20"
-                                HorizontalAlignment="Left"
-                                Click="FetchPrices_Click"
-                                Style="{StaticResource EveButtonStyle}" Grid.Column="1"/>
-                        </Grid>
-                    </Border>
-                    <GridSplitter Grid.Row="4"
+                                        <!-- Hover effect -->
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#444"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="{Binding Depth, Converter={StaticResource DepthToMarginConverter}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="160"/>
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Grid.Column="0"
+                                            IsChecked="{Binding BuildInsteadOfBuy, Mode=TwoWay}"
+                                            VerticalAlignment="Center"
+                                            Click="BuildInsteadOfBuy_Click"
+                                            ToolTip="Build instead of buy"
+                                            Visibility="{Binding IsBuildable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        <Image Source="{Binding IconUrl}"
+                                            Width="24" Height="24"
+                                            VerticalAlignment="Center"
+                                            Grid.Column="1"/>
+                                        <TextBlock Text="{Binding MaterialName}"
+                                            Grid.Column="2"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            Foreground="White"/>
+                                        <TextBlock Text="{Binding DisplayQuantity}"
+                                            Grid.Column="3"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            Foreground="White"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                    <GridSplitter Grid.Row="1"
                         Height="5"
                         Background="#555"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         ShowsPreview="True"/>
-                    <Border Grid.Row="5" Background="#333" Padding="6">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="224"/>
-                                <ColumnDefinition Width="80"/>
-                                <ColumnDefinition Width="80"/>
-                                <ColumnDefinition Width="80"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Material" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
-                            <TextBlock Text="Quantity" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
-                            <TextBlock Text="Buy Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
-                            <TextBlock Text="Sell Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3"/>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Row="6" Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="35*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <!-- Stretch SummaryList -->
-                                <RowDefinition Height="Auto" />
-                                <!-- ISK total -->
-                            </Grid.RowDefinitions>
-                            <ListView x:Name="SummaryList" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
-                                <ListView.Resources>
-                                    <Style TargetType="{x:Type GridViewColumnHeader}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Setter Property="Height" Value="0"/>
-                                    </Style>
-                                </ListView.Resources>
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="Padding" Value="0"/>
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Background="#333" Padding="6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="157*"/>
+                                    <ColumnDefinition Width="305*"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Blueprint Summary" FontWeight="Bold" FontSize="14" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button x:Name="FetchPricesButton"
+                                    Content="Fetch Prices"
+                                    Width="120"
+                                    Height="20"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Click="FetchPrices_Click"
+                                    Style="{StaticResource EveButtonStyle}" Grid.Column="2" Margin="0,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="1" Background="#333" Padding="6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="224"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="80"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Material" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <TextBlock Text="Quantity" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
+                                <TextBlock Text="Buy Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
+                                <TextBlock Text="Sell Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3"/>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="2" Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <!-- Stretch SummaryList -->
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <!-- ISK total -->
+                                </Grid.RowDefinitions>
+                                <ListView x:Name="SummaryList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
+                                    <ListView.Resources>
+                                        <Style TargetType="{x:Type GridViewColumnHeader}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="Height" Value="0"/>
+                                        </Style>
+                                    </ListView.Resources>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 
-                                        <Style.Triggers>
-                                            <!-- Grey out item if it is being built -->
-                                            <DataTrigger Binding="{Binding BuildInsteadOfBuy}" Value="True">
-                                                <Setter Property="Opacity" Value="0.5"/>
-                                            </DataTrigger>
+                                            <Style.Triggers>
+                                                <!-- Grey out item if it is being built -->
+                                                <DataTrigger Binding="{Binding BuildInsteadOfBuy}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                </DataTrigger>
 
-                                            <!-- Hover effect -->
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#444"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="{Binding Depth, Converter={StaticResource DepthToMarginConverter}}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="24"/>
-                                                <ColumnDefinition Width="200" />
-                                                <ColumnDefinition Width="80"/>
-                                                <ColumnDefinition Width="80"/>
-                                                <ColumnDefinition Width="80"/>
-                                                <ColumnDefinition Width="80"/>
-                                                <ColumnDefinition Width="160"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding IconUrl}"
-                                                Width="24" Height="24"
-                                                VerticalAlignment="Center"
-                                                Grid.Column="0"/>
-                                            <TextBlock Text="{Binding MaterialName}"
-                                                Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                            <TextBlock Text="{Binding Quantity}"
-                                                Grid.Column="2"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                            <TextBlock Text="{Binding BuyPrice, StringFormat='{}{0:N2}'}"
-                                                Grid.Column="3"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                            <TextBlock Text="{Binding SellPrice, StringFormat='{}{0:N2}'}"
-                                                Grid.Column="4"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                            <TextBlock Text="{Binding TotalBuy, StringFormat='{}{0:N2}'}"
-                                                Grid.Column="5"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                            <TextBlock Text="{Binding TotalSell, StringFormat='{}{0:N2}'}"
-                                                Grid.Column="6"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Foreground="White"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <TextBlock Grid.Row="7" x:Name="TotalPriceText"
-                                FontSize="12"
-                                FontWeight="Bold"
-                                Foreground="LightGray"
-                                Margin="0,0,0,0"
-                                Text="Total: Buy - 0 ISK | Sell - 0 ISK" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
-                                <TextBlock.RenderTransform>
-                                    <TransformGroup>
-                                        <SkewTransform/>
-                                        <RotateTransform/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
+                                                <!-- Hover effect -->
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#444"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="{Binding Depth, Converter={StaticResource DepthToMarginConverter}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="24"/>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="160"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Source="{Binding IconUrl}"
+                                                    Width="24" Height="24"
+                                                    VerticalAlignment="Center"
+                                                    Grid.Column="0"/>
+                                                <TextBlock Text="{Binding MaterialName}"
+                                                    Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                                <TextBlock Text="{Binding Quantity}"
+                                                    Grid.Column="2"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                                <TextBlock Text="{Binding BuyPrice, StringFormat='{}{0:N2}'}"
+                                                    Grid.Column="3"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                                <TextBlock Text="{Binding SellPrice, StringFormat='{}{0:N2}'}"
+                                                    Grid.Column="4"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                                <TextBlock Text="{Binding TotalBuy, StringFormat='{}{0:N2}'}"
+                                                    Grid.Column="5"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                                <TextBlock Text="{Binding TotalSell, StringFormat='{}{0:N2}'}"
+                                                    Grid.Column="6"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Foreground="White"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <TextBlock Grid.Row="3" x:Name="TotalPriceText"
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                    Foreground="LightGray"
+                                    Margin="0,0,0,0"
+                                    Text="Total: Buy - 0 ISK | Sell - 0 ISK" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
+                                    <TextBlock.RenderTransform>
+                                        <TransformGroup>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>
