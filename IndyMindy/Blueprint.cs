@@ -35,4 +35,5 @@ public class MaterialSummary
     public int TypeID { get; set; }
     public decimal TotalBuy => BuyPrice * Quantity;
     public decimal TotalSell => SellPrice * Quantity;
+    public string IconUrl => $"https://images.evetech.net/types/{TypeID}/icon";
 }

@@ -110,17 +110,13 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="110" />
-                        <!-- Materials -->
-                        <RowDefinition Height="30" />
-                        <!-- Splitter -->
-                        <RowDefinition Height="300" />
-                        <RowDefinition Height="30" />
-                        <!-- Materials -->
-                        <RowDefinition Height="30" />
-                        <!-- Splitter -->
-                        <RowDefinition Height="200" />
-                        <!-- Summary -->
-                    </Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="100" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="100" />
+                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
                         <Grid>
@@ -155,7 +151,7 @@
                             </StackPanel>
                         </Grid>
                     </StackPanel>
-                    <Border Grid.Row="1" Background="#222" Padding="6" CornerRadius="6,6,0,0">
+                    <Border Grid.Row="1" Background="#222" Padding="6" CornerRadius="6,6,0,0" Height="Auto">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -227,7 +223,6 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <!-- Blueprint Summary Section -->
-
                     <Border Grid.Row="3" Background="#333" Padding="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -244,10 +239,16 @@
                                 Style="{StaticResource EveButtonStyle}" Grid.Column="1"/>
                         </Grid>
                     </Border>
-                    <Border Grid.Row="4" Background="#333" Padding="6">
+                    <GridSplitter Grid.Row="4"
+                        Height="5"
+                        Background="#555"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        ShowsPreview="True"/>
+                    <Border Grid.Row="5" Background="#333" Padding="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="224"/>
                                 <ColumnDefinition Width="80"/>
                                 <ColumnDefinition Width="80"/>
                                 <ColumnDefinition Width="80"/>
@@ -258,7 +259,7 @@
                             <TextBlock Text="Sell Price" FontWeight="Bold" FontSize="12" Foreground="LightGray" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3"/>
                         </Grid>
                     </Border>
-                    <Border Grid.Row="5" Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
+                    <Border Grid.Row="6" Background="#333" Padding="6" Margin="0" CornerRadius="0,0,6,6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="35*"/>
@@ -270,15 +271,7 @@
                                 <RowDefinition Height="Auto" />
                                 <!-- ISK total -->
                             </Grid.RowDefinitions>
-                            
-                            
-                            
-                            <ListView x:Name="SummaryList"
-                                FontSize="11"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="White"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,33">
+                            <ListView x:Name="SummaryList" Margin="0" Padding="2,0,2,0" BorderThickness="0" Background="#222" ScrollViewer.VerticalScrollBarVisibility="Auto" Foreground="White">
                                 <ListView.Resources>
                                     <Style TargetType="{x:Type GridViewColumnHeader}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -289,59 +282,80 @@
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Background" Value="Transparent"/>
                                         <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="Padding" Value="4"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
                                         <Style.Triggers>
+                                            <!-- Grey out item if it is being built -->
+                                            <DataTrigger Binding="{Binding BuildInsteadOfBuy}" Value="True">
+                                                <Setter Property="Opacity" Value="0.5"/>
+                                            </DataTrigger>
+
+                                            <!-- Hover effect -->
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Background" Value="#444"/>
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
                                 </ListView.ItemContainerStyle>
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}" Width="140"/>
-                                        <GridViewColumn Header="Qty" DisplayMemberBinding="{Binding Quantity}" Width="80"/>
-                                        <GridViewColumn Header="Buy Price" Width="100">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding BuyPrice, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="Sell Price" Width="100">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding SellPrice, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="Total Buy" Width="100">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding TotalBuy, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-
-                                        <GridViewColumn Header="Total Sell" Width="100">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding TotalSell, StringFormat='{}{0:N2}'}" TextAlignment="Right"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="{Binding Depth, Converter={StaticResource DepthToMarginConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="24"/>
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="160"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Source="{Binding IconUrl}"
+                                                Width="24" Height="24"
+                                                VerticalAlignment="Center"
+                                                Grid.Column="0"/>
+                                            <TextBlock Text="{Binding MaterialName}"
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                            <TextBlock Text="{Binding Quantity}"
+                                                Grid.Column="2"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                            <TextBlock Text="{Binding BuyPrice, StringFormat='{}{0:N2}'}"
+                                                Grid.Column="3"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                            <TextBlock Text="{Binding SellPrice, StringFormat='{}{0:N2}'}"
+                                                Grid.Column="4"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                            <TextBlock Text="{Binding TotalBuy, StringFormat='{}{0:N2}'}"
+                                                Grid.Column="5"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                            <TextBlock Text="{Binding TotalSell, StringFormat='{}{0:N2}'}"
+                                                Grid.Column="6"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Foreground="White"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
                             </ListView>
-                            <TextBlock x:Name="TotalPriceText"
+                            <TextBlock Grid.Row="7" x:Name="TotalPriceText"
                                 FontSize="12"
                                 FontWeight="Bold"
                                 Foreground="LightGray"
-                                Margin="0,310,0,16"
+                                Margin="0,0,0,0"
                                 Text="Total: Buy - 0 ISK | Sell - 0 ISK" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
                                 <TextBlock.RenderTransform>
                                     <TransformGroup>
-                                        <ScaleTransform ScaleY="-1"/>
                                         <SkewTransform/>
                                         <RotateTransform/>
                                         <TranslateTransform/>
