@@ -66,17 +66,46 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!-- Login Button + Search Box -->
-                <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
-                    <Button x:Name="LoginButton"
-                        Content="Log in to EVE"
-                        Width="120"
-                        Height="25"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,6"
-                        Click="LoginButton_Click"
-                        Style="{StaticResource EveButtonStyle}" 
-                        Visibility="Collapsed"/>
-
+                <StackPanel Grid.Row="0" Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Column for Login to EVE -->
+                            <ColumnDefinition Width="10"/>
+                            <!-- Spacer -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Column for Button 2 -->
+                            <ColumnDefinition Width="10"/>
+                            <!-- Spacer -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Column for Button 3 -->
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="LoginEveButton"
+                            Content="Log in EVE character"
+                            Width="100"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,6"
+                            Click="LoginEveButton_Click"
+                            Style="{StaticResource EveButtonStyle}" 
+                            Visibility="Collapsed"/>
+                        <Button Grid.Column="2" x:Name="LoginButton"
+                            Content="Log in"
+                            Width="100"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,6"
+                            Click="LoginButton_Click"
+                            Style="{StaticResource EveButtonStyle}"/>
+                        <Button Grid.Column="4" x:Name="RegisterButton"
+                            Content="Register"
+                            Width="100"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,6"
+                            Click="RegisterButton_Click"
+                            Style="{StaticResource EveButtonStyle}"/>
+                    </Grid>
                     <Grid Height="25">
                         <TextBox x:Name="SearchBox"
                             TextChanged="SearchBox_TextChanged"

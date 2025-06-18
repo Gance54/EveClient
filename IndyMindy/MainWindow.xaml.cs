@@ -337,7 +337,7 @@ namespace EveIndyCalc
             return (characterId, characterName);
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginEveButton_Click(object sender, RoutedEventArgs e)
         {
             string state = Guid.NewGuid().ToString(); // Prevent CSRF
             string authUrl = $"{loginUrl}?response_type=code&redirect_uri={Uri.EscapeDataString(callbackUrl)}&client_id={clientId}&scope={Uri.EscapeDataString(scopes)}&state={state}";
@@ -410,6 +410,18 @@ namespace EveIndyCalc
             };
 
             MessageBox.Show("Login successful!\n" + SessionManager.CurrentUser.CharacterName);
+        }
+
+        private /* async */ void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBox.Show("Login placeholder!\n" + SessionManager.CurrentUser?.CharacterName);
+        }
+
+        private /* async */ void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBox.Show("Register placeholder!\n" + SessionManager.CurrentUser?.CharacterName);
         }
     }
 
