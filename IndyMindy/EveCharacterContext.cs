@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IndyMindy
 {
-    public class EveUserContext
+    public class EveCharacterContext
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
@@ -18,18 +18,9 @@ namespace IndyMindy
 
         public string[] Scopes { get; set; }
 
-        // Add more as needed
         public string CorporationName { get; set; }
         public long CorporationID { get; set; }
 
         public bool IsLoggedIn => !string.IsNullOrEmpty(AccessToken) && TokenExpiration > DateTime.UtcNow;
-
-        //-----------
-        public ProductionPlanner Planner { get; set; } = new();
-    }
-
-    public static class SessionManager
-    {
-        public static EveUserContext CurrentUser { get; set; }
     }
 }

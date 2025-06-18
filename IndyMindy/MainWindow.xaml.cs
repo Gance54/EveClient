@@ -337,7 +337,7 @@ namespace EveIndyCalc
             return (characterId, characterName);
         }
 
-        private async void LoginEveButton_Click(object sender, RoutedEventArgs e)
+        private async void AddEveCharacterButton_Click(object sender, RoutedEventArgs e)
         {
             string state = Guid.NewGuid().ToString(); // Prevent CSRF
             string authUrl = $"{loginUrl}?response_type=code&redirect_uri={Uri.EscapeDataString(callbackUrl)}&client_id={clientId}&scope={Uri.EscapeDataString(scopes)}&state={state}";
@@ -399,7 +399,7 @@ namespace EveIndyCalc
 
             var (characterId, characterName) = await GetCharacterInfoAsync(accessToken);
 
-            SessionManager.CurrentUser = new EveUserContext
+            EveCharacterContext character = new EveCharacterContext
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
@@ -409,19 +409,38 @@ namespace EveIndyCalc
                 Scopes = scopes.Split(' ')
             };
 
-            MessageBox.Show("Login successful!\n" + SessionManager.CurrentUser.CharacterName);
+            SessionManager.CurrentUser.Characters.Add(character);
+
+            MessageBox.Show("Login successful!\n" + SessionManager.CurrentUser?.Characters?[0]?.CharacterName);
         }
 
         private /* async */ void LoginButton_Click(object sender, RoutedEventArgs e)
         {
 
-            MessageBox.Show("Login placeholder!\n" + SessionManager.CurrentUser?.CharacterName);
+            // Simulated backend login result
+            var dummyUser = new UserContext
+            {
+                Email = "dummy@example.com",
+                AuthToken = "dummy_token_123",
+                IsSubscribed = true,
+                Characters = new List<EveCharacterContext>() // No characters yet
+            };
+
+            // Set as current user session
+            SessionManager.CurrentUser = dummyUser;
+
+            LoginButton.Visibility = Visibility.Collapsed;
+            RegisterButton.Visibility = Visibility.Collapsed;
+            AddEveCharacterButton.Visibility = Visibility.Visible;
+
+
+            MessageBox.Show($"Logged in as {dummyUser.Email} (no characters linked yet).");
         }
 
         private /* async */ void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
 
-            MessageBox.Show("Register placeholder!\n" + SessionManager.CurrentUser?.CharacterName);
+            MessageBox.Show("Register placeholder!\n" + SessionManager.CurrentUser?.Characters?[0]?.CharacterName);
         }
     }
 
