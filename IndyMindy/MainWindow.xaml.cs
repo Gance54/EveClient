@@ -319,7 +319,7 @@ namespace EveIndyCalc
             return flat;
         }
 
-        private async Task<(long characterId, string characterName)> GetCharacterInfoAsync(string accessToken)
+        private async Task<dynamic> GetCharacterInfoAsync(string accessToken)
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -331,10 +331,7 @@ namespace EveIndyCalc
             var json = await response.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(json);
 
-            long characterId = data.CharacterID;
-            string characterName = data.CharacterName;
-
-            return (characterId, characterName);
+            return data;
         }
 
         private async void AddEveCharacterButton_Click(object sender, RoutedEventArgs e)
@@ -397,15 +394,15 @@ namespace EveIndyCalc
             string refreshToken = tokenData.refresh_token;
             int expiresIn = tokenData.expires_in;
 
-            var (characterId, characterName) = await GetCharacterInfoAsync(accessToken);
+            dynamic verifyData = await GetCharacterInfoAsync(accessToken);
 
             EveCharacterContext character = new EveCharacterContext
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 TokenExpiration = DateTime.UtcNow.AddSeconds(expiresIn),
-                CharacterID = characterId,
-                CharacterName = characterName,
+                CharacterID = verifyData.CharacterID,
+                CharacterName = verifyData.CharacterName,
                 Scopes = scopes.Split(' ')
             };
 
