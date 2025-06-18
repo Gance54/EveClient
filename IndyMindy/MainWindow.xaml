@@ -74,7 +74,8 @@
                         HorizontalAlignment="Left"
                         Margin="0,0,0,6"
                         Click="LoginButton_Click"
-                        Style="{StaticResource EveButtonStyle}" />
+                        Style="{StaticResource EveButtonStyle}" 
+                        Visibility="Collapsed"/>
 
                     <Grid Height="25">
                         <TextBox x:Name="SearchBox"
