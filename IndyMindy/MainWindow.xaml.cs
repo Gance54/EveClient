@@ -59,6 +59,7 @@ namespace EveIndyCalc
                 IntPtr handle = (new WindowInteropHelper(this)).Handle;
                 HwndSource.FromHwnd(handle)?.AddHook(WindowProc);
             };
+            RedrawUI();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
@@ -415,9 +416,20 @@ namespace EveIndyCalc
             MessageBox.Show("Login successful!\n" + SessionManager.CurrentUser?.Characters?[0]?.CharacterName);
         }
 
+        private void RedrawUI()
+        {
+            var user = IndyMindy.SessionManager.CurrentUser;
+            bool isLoggedIn = user != null;
+            bool isSubscribed = isLoggedIn && user.IsSubscribed;
+
+            AddEveCharacterButton.Visibility = (isLoggedIn && isSubscribed) ? Visibility.Visible : Visibility.Collapsed;
+            OpenProductionPlannerButton.Visibility = (isLoggedIn && isSubscribed) ? Visibility.Visible : Visibility.Collapsed;
+            LoginButton.Visibility = (!isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
+            RegisterButton.Visibility = (!isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         private /* async */ void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-
             // Simulated backend login result
             var dummyUser = new UserContext
             {
@@ -430,10 +442,7 @@ namespace EveIndyCalc
             // Set as current user session
             SessionManager.CurrentUser = dummyUser;
 
-            LoginButton.Visibility = Visibility.Collapsed;
-            RegisterButton.Visibility = Visibility.Collapsed;
-            AddEveCharacterButton.Visibility = Visibility.Visible;
-
+            RedrawUI();
 
             MessageBox.Show($"Logged in as {dummyUser.Email} (no characters linked yet).");
         }
