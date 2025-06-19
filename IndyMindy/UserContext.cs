@@ -18,6 +18,29 @@ namespace IndyMindy
 
         public DateTime ExpiresAt => IssuedAt.AddSeconds(ExpiresIn);
         public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
+
+        // Constructor for backend response
+        public TokenInfo(string access_token, string refresh_token, int expires_in, string token_type)
+        {
+            AccessToken = access_token;
+            RefreshToken = refresh_token;
+            ExpiresIn = expires_in;
+            TokenType = token_type;
+            IssuedAt = DateTime.UtcNow;
+        }
+
+        // Optional: static factory for deserialization from backend JSON
+        public static TokenInfo FromBackendResponse(dynamic response)
+        {
+            return new TokenInfo(
+                (string)response.access_token,
+                (string)response.refresh_token,
+                (int)response.expires_in,
+                (string)response.token_type
+            );
+        }
+
+        public TokenInfo() { } // Parameterless for serialization
     }
 
     public class UserContext
