@@ -69,24 +69,13 @@
                 <StackPanel Grid.Row="0" Orientation="Vertical">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/> <!-- AddEveCharacterButton -->
-                            <ColumnDefinition Width="10"/>   <!-- Spacer -->
                             <ColumnDefinition Width="Auto"/> <!-- LogoutButton -->
                             <ColumnDefinition Width="10"/>   <!-- Spacer -->
                             <ColumnDefinition Width="Auto"/> <!-- LoginButton -->
                             <ColumnDefinition Width="10"/>   <!-- Spacer -->
                             <ColumnDefinition Width="Auto"/> <!-- RegisterButton -->
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="AddEveCharacterButton"
-                            Content="Add character"
-                            Width="100"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,6"
-                            Click="AddEveCharacterButton_Click"
-                            Style="{StaticResource EveButtonStyle}" 
-                            Visibility="Collapsed"/>
-                        <Button Grid.Column="2" x:Name="LogoutButton"
+                        <Button Grid.Column="0" x:Name="LogoutButton"
                             Content="Logout"
                             Width="100"
                             Height="25"
@@ -95,7 +84,7 @@
                             Click="LogoutButton_Click"
                             Style="{StaticResource EveButtonStyle}"
                             Visibility="Collapsed"/>
-                        <Button Grid.Column="4" x:Name="LoginButton"
+                        <Button Grid.Column="2" x:Name="LoginButton"
                             Content="Log in"
                             Width="100"
                             Height="25"
@@ -103,7 +92,7 @@
                             Margin="0,0,0,6"
                             Click="LoginButton_Click"
                             Style="{StaticResource EveButtonStyle}"/>
-                        <Button Grid.Column="6" x:Name="RegisterButton"
+                        <Button Grid.Column="4" x:Name="RegisterButton"
                             Content="Register"
                             Width="100"
                             Height="25"
