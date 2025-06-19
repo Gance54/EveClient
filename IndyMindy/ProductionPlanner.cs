@@ -11,7 +11,6 @@ namespace IndyMindy
         public int TypeID { get; set; }
         public string Name { get; set; }
         public int Quantity { get; set; }
-        public DateTime PlannedDate { get; set; } = DateTime.Now;
     }
 
     public class ProductionPlanner

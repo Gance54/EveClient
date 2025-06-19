@@ -456,6 +456,13 @@ namespace EveIndyCalc
             }
 
         }
+
+        private void OpenProductionPlannerButton_Click(object sender, RoutedEventArgs e)
+        {
+            var plannerWindow = new ProductionPlannerWindow();
+            plannerWindow.Owner = this;
+            plannerWindow.Show();
+        }
     }
 
     public class DepthToMarginConverter : IValueConverter

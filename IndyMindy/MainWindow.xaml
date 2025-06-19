@@ -127,6 +127,16 @@
                     <ListBox x:Name="BlueprintList" DisplayMemberPath="Name" SelectionChanged="BlueprintList_SelectionChanged" Background="#FF1A1A25" Foreground="White" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
                 </Border>
             </Grid>
+            <!-- Production Planner Button -->
+            <Button x:Name="OpenProductionPlannerButton"
+                    Content="Production Planner"
+                    Width="200"
+                    Height="35"
+                    HorizontalAlignment="Left"
+                    Margin="270,40,0,0"
+                    VerticalAlignment="Top"
+                    Click="OpenProductionPlannerButton_Click"
+                    Style="{StaticResource EveButtonStyle}"/>
             <!-- Details Panel -->
             <Border Background="#CC000000" CornerRadius="6" Margin="270,88,10,10" Padding="0" BorderBrush="#555" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
                 <Border.RenderTransform>
