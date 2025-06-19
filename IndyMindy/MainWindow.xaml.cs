@@ -43,6 +43,12 @@ namespace EveIndyCalc
         private List<Blueprint> allBlueprints = new();
         private Blueprint? currentBlueprint;
 
+        // for REST comm test
+        private static readonly HttpClient _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("http://localhost:5000")
+        };
+
         public MainWindow()
         {
             InitializeComponent();
@@ -288,8 +294,6 @@ namespace EveIndyCalc
 
             TotalPriceText.Text = $"Total: Buy - {totalBuy:N2} ISK  |  Sell - {totalSell:N2} ISK";
         }
-
-
 
         public static List<BlueprintMaterial> FlattenMaterials(Blueprint blueprint, double multiplier = 1, int depth = 0)
         {
