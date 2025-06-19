@@ -89,6 +89,15 @@
                             Click="AddEveCharacterButton_Click"
                             Style="{StaticResource EveButtonStyle}" 
                             Visibility="Collapsed"/>
+                        <Button Grid.Column="1" x:Name="LogoutButton"
+                            Content="Logout"
+                            Width="100"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,6"
+                            Click="LogoutButton_Click"
+                            Style="{StaticResource EveButtonStyle}"
+                            Visibility="Collapsed"/>
                         <Button Grid.Column="2" x:Name="LoginButton"
                             Content="Log in"
                             Width="100"
