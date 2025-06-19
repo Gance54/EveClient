@@ -438,10 +438,23 @@ namespace EveIndyCalc
             MessageBox.Show($"Logged in as {dummyUser.Email} (no characters linked yet).");
         }
 
-        private /* async */ void RegisterButton_Click(object sender, RoutedEventArgs e)
+        private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                // Async GET request
+                string response = await _httpClient.GetStringAsync("http://localhost:5000/api/account/sayhi");
+                MessageBox.Show(response, "Backend Says");
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"Request error:\n{httpEx.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            MessageBox.Show("Register placeholder!\n" + SessionManager.CurrentUser?.Characters?[0]?.CharacterName);
         }
     }
 
