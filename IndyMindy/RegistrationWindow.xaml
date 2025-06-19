@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EveIndyCalc.RegistrationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Register" Height="250" Width="300"
+        Title="Register" Height="350" Width="350"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -10,22 +10,60 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="EmailBox"
-             VerticalAlignment="Center"
-             TextChanged="EmailBox_TextChanged" />
-        <TextBlock x:Name="EmailPlaceholder"
-               Text="Email"
-               Foreground="Gray"
-               Margin="5,0,0,0"
-               VerticalAlignment="Center"
-               IsHitTestVisible="False"
-               Visibility="Visible" />
-        <PasswordBox x:Name="PasswordBox" Grid.Row="1" Margin="0,5" />
-        <PasswordBox x:Name="ConfirmBox" Grid.Row="2" Margin="0,5" />
+        <!-- Email Section -->
+        <TextBlock Grid.Row="0" Text="Email:" FontWeight="Bold" Margin="0,0,0,5"/>
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <TextBox x:Name="EmailBox"
+                     VerticalAlignment="Center"
+                     TextChanged="EmailBox_TextChanged" />
+            <TextBlock x:Name="EmailPlaceholder"
+                       Text="Enter your email address"
+                       Foreground="Gray"
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Visibility="Visible" />
+        </Grid>
 
-        <Button Grid.Row="3" Content="Register" Margin="0,10" Click="Register_Click"/>
-        <TextBlock x:Name="StatusText" Grid.Row="4" Foreground="Red" Margin="0,5"/>
+        <!-- Password Section -->
+        <TextBlock Grid.Row="2" Text="Password:" FontWeight="Bold" Margin="0,0,0,5"/>
+        <Grid Grid.Row="3" Margin="0,0,0,10">
+            <PasswordBox x:Name="PasswordBox" 
+                         VerticalAlignment="Center"
+                         PasswordChanged="PasswordBox_PasswordChanged"/>
+            <TextBlock x:Name="PasswordPlaceholder"
+                       Text="Enter your password"
+                       Foreground="Gray"
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Visibility="Visible" />
+        </Grid>
+
+        <!-- Confirm Password Section -->
+        <TextBlock Grid.Row="4" Text="Confirm Password:" FontWeight="Bold" Margin="0,0,0,5"/>
+        <Grid Grid.Row="5" Margin="0,0,0,15">
+            <PasswordBox x:Name="ConfirmBox" 
+                         VerticalAlignment="Center"
+                         PasswordChanged="ConfirmBox_PasswordChanged"/>
+            <TextBlock x:Name="ConfirmPlaceholder"
+                       Text="Repeat your password"
+                       Foreground="Gray"
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Visibility="Visible" />
+        </Grid>
+
+        <!-- Register Button -->
+        <Button Grid.Row="6" Content="Register" Margin="0,10" Click="Register_Click" Height="30"/>
+        
+        <!-- Status Text -->
+        <TextBlock x:Name="StatusText" Grid.Row="7" Foreground="Red" Margin="0,5" TextWrapping="Wrap"/>
     </Grid>
 </Window>
