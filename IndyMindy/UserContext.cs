@@ -12,47 +12,14 @@ namespace IndyMindy
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public int AccessTokenExpiresIn { get; set; } // 1 hour
-        public int RefreshTokenExpiresIn { get; set; } // 1 month
         public string TokenType { get; set; }
-        public DateTime IssuedAt { get; set; }
-
-        // Legacy property for backward compatibility
-        public int ExpiresIn 
-        { 
-            get => AccessTokenExpiresIn; 
-            set => AccessTokenExpiresIn = value; 
-        }
-
-        public DateTime AccessTokenExpiresAt => IssuedAt.AddSeconds(AccessTokenExpiresIn);
-        public DateTime RefreshTokenExpiresAt => IssuedAt.AddSeconds(RefreshTokenExpiresIn);
-        public bool IsAccessTokenExpired => DateTime.UtcNow >= AccessTokenExpiresAt;
-        public bool IsRefreshTokenExpired => DateTime.UtcNow >= RefreshTokenExpiresAt;
-
-        // Legacy property for backward compatibility
-        public DateTime ExpiresAt => AccessTokenExpiresAt;
-        public bool IsExpired => IsAccessTokenExpired;
 
         // Constructor for backend response
-        public TokenInfo(string access_token, string refresh_token, int access_expires_in, int refresh_expires_in, string token_type, DateTime issued_at)
+        public TokenInfo(string access_token, string refresh_token, string token_type)
         {
             AccessToken = access_token;
             RefreshToken = refresh_token;
-            AccessTokenExpiresIn = access_expires_in;
-            RefreshTokenExpiresIn = refresh_expires_in;
             TokenType = token_type;
-            IssuedAt = issued_at;
-        }
-
-        // Legacy constructor for backward compatibility
-        public TokenInfo(string access_token, string refresh_token, int expires_in, string token_type, DateTime issued_at)
-        {
-            AccessToken = access_token;
-            RefreshToken = refresh_token;
-            AccessTokenExpiresIn = expires_in;
-            RefreshTokenExpiresIn = expires_in; // Default to same value for backward compatibility
-            TokenType = token_type;
-            IssuedAt = issued_at;
         }
 
         // Optional: static factory for deserialization from backend JSON
@@ -61,10 +28,7 @@ namespace IndyMindy
             return new TokenInfo(
                 (string)response.access_token,
                 (string)response.refresh_token,
-                (int)response.access_token_expires_in,
-                (int)response.refresh_token_expires_in,
-                (string)response.token_type,
-                (DateTime)response.issued_at
+                (string)response.token_type
             );
         }
 
@@ -80,7 +44,7 @@ namespace IndyMindy
         public ProductionPlanner Planner { get; set; } = new();
         public TokenInfo Tokens { get; set; }
 
-        public bool IsLoggedIn => Tokens != null && !Tokens.IsExpired;
+        public bool IsLoggedIn => Tokens != null;
         public bool IsActiveSubscriber => IsLoggedIn && IsSubscribed;
     }
 
@@ -107,9 +71,8 @@ namespace IndyMindy
                 return false;
 
             // Check if the main user token is expired
-            if (CurrentUser.Tokens.IsExpired)
-                return false;
-
+            // TODO: send request to server to validate the token
+            
             // Check if any character tokens are expired
             if (CurrentUser.Characters != null)
             {

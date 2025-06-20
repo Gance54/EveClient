@@ -63,18 +63,7 @@ namespace EveIndyCalc
             if (savedUser != null)
             {
                 SessionManager.CurrentUser = savedUser;
-                
-                // Validate tokens and clean expired session
-                SessionManager.ValidateAndCleanSession();
-                
-                if (SessionManager.CurrentUser != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Loaded session for user: {savedUser.Email}");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Session was expired and cleared.");
-                }
+                System.Diagnostics.Debug.WriteLine($"Loaded session for user: {savedUser.Email}");
             }
         }
 

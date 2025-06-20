@@ -79,10 +79,7 @@ namespace EveIndyCalc
                             {
                                 AccessToken = loginResponse.AccessToken,
                                 RefreshToken = loginResponse.RefreshToken,
-                                AccessTokenExpiresIn = loginResponse.AccessTokenExpiresIn,
-                                RefreshTokenExpiresIn = loginResponse.RefreshTokenExpiresIn,
                                 TokenType = loginResponse.TokenType,
-                                IssuedAt = loginResponse.IssuedAt
                             }
                         };
 
