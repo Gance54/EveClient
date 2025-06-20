@@ -207,9 +207,9 @@ namespace EveIndyCalc
                 Scopes = scopes.Split(' ')
             };
 
-            SessionManager.CurrentUser.Characters.Add(character);
+            SessionManager.AddCharacter(character);
 
-            MessageBox.Show("Login successful!\n" + SessionManager.CurrentUser?.Characters?[0]?.CharacterName);
+            MessageBox.Show("Character added successfully!\n" + character.CharacterName);
         }
     }
 } 

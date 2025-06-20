@@ -70,7 +70,6 @@ namespace EveIndyCalc
             {
                 // Send registration request to server
                 var response = await http.PostAsync(ApiConfig.RegisterEndpoint, content);
-
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Account created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

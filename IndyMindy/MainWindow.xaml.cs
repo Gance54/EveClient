@@ -329,11 +329,6 @@ namespace EveIndyCalc
             return flat;
         }
 
-        private async void AddEveCharacterButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void RedrawUI()
         {
             var user = IndyMindy.SessionManager.CurrentUser;

@@ -57,6 +57,26 @@ namespace IndyMindy
     public static class SessionManager
     {
         public static UserContext CurrentUser { get; set; }
+
+        public static void AddCharacter(EveCharacterContext character)
+        {
+            if (CurrentUser != null)
+            {
+                CurrentUser.Characters.Add(character);
+                // Save the updated session
+                SessionPersistence.SaveSession(CurrentUser);
+            }
+        }
+
+        public static void RemoveCharacter(EveCharacterContext character)
+        {
+            if (CurrentUser != null)
+            {
+                CurrentUser.Characters.Remove(character);
+                // Save the updated session
+                SessionPersistence.SaveSession(CurrentUser);
+            }
+        }
     }
 
     public static class SessionPersistence
