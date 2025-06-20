@@ -56,15 +56,29 @@ namespace IndyMindy
 
     public static class SessionManager
     {
-        public static UserContext CurrentUser { get; set; }
+        private static UserContext _currentUser;
+        
+        public static UserContext CurrentUser 
+        { 
+            get => _currentUser;
+            set
+            {
+                _currentUser = value;
+                if (_currentUser != null)
+                {
+                    SessionPersistence.SaveSession(_currentUser);
+                }
+            }
+        }
 
         public static void AddCharacter(EveCharacterContext character)
         {
             if (CurrentUser != null)
             {
                 CurrentUser.Characters.Add(character);
-                // Save the updated session
-                SessionPersistence.SaveSession(CurrentUser);
+                // Session is automatically saved via the CurrentUser property setter
+                // when we reassign it (even though it's the same object)
+                CurrentUser = CurrentUser; // Trigger save
             }
         }
 
@@ -73,7 +87,15 @@ namespace IndyMindy
             if (CurrentUser != null)
             {
                 CurrentUser.Characters.Remove(character);
-                // Save the updated session
+                // Session is automatically saved via the CurrentUser property setter
+                CurrentUser = CurrentUser; // Trigger save
+            }
+        }
+
+        public static void UpdateSession()
+        {
+            if (CurrentUser != null)
+            {
                 SessionPersistence.SaveSession(CurrentUser);
             }
         }
