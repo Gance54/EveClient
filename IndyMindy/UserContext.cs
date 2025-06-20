@@ -12,19 +12,45 @@ namespace IndyMindy
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public int ExpiresIn { get; set; }
+        public int AccessTokenExpiresIn { get; set; } // 1 hour
+        public int RefreshTokenExpiresIn { get; set; } // 1 month
         public string TokenType { get; set; }
         public DateTime IssuedAt { get; set; }
 
-        public DateTime ExpiresAt => IssuedAt.AddSeconds(ExpiresIn);
-        public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
+        // Legacy property for backward compatibility
+        public int ExpiresIn 
+        { 
+            get => AccessTokenExpiresIn; 
+            set => AccessTokenExpiresIn = value; 
+        }
+
+        public DateTime AccessTokenExpiresAt => IssuedAt.AddSeconds(AccessTokenExpiresIn);
+        public DateTime RefreshTokenExpiresAt => IssuedAt.AddSeconds(RefreshTokenExpiresIn);
+        public bool IsAccessTokenExpired => DateTime.UtcNow >= AccessTokenExpiresAt;
+        public bool IsRefreshTokenExpired => DateTime.UtcNow >= RefreshTokenExpiresAt;
+
+        // Legacy property for backward compatibility
+        public DateTime ExpiresAt => AccessTokenExpiresAt;
+        public bool IsExpired => IsAccessTokenExpired;
 
         // Constructor for backend response
+        public TokenInfo(string access_token, string refresh_token, int access_expires_in, int refresh_expires_in, string token_type, DateTime issued_at)
+        {
+            AccessToken = access_token;
+            RefreshToken = refresh_token;
+            AccessTokenExpiresIn = access_expires_in;
+            RefreshTokenExpiresIn = refresh_expires_in;
+            TokenType = token_type;
+            IssuedAt = issued_at;
+        }
+
+        // Legacy constructor for backward compatibility
         public TokenInfo(string access_token, string refresh_token, int expires_in, string token_type, DateTime issued_at)
         {
             AccessToken = access_token;
             RefreshToken = refresh_token;
-            ExpiresIn = expires_in;
+            AccessTokenExpiresIn = expires_in;
+            RefreshTokenExpiresIn = expires_in; // Default to same value for backward compatibility
             TokenType = token_type;
             IssuedAt = issued_at;
         }
@@ -35,7 +61,8 @@ namespace IndyMindy
             return new TokenInfo(
                 (string)response.access_token,
                 (string)response.refresh_token,
-                (int)response.expires_in,
+                (int)response.access_token_expires_in,
+                (int)response.refresh_token_expires_in,
                 (string)response.token_type,
                 (DateTime)response.issued_at
             );
