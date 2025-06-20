@@ -80,7 +80,8 @@ namespace EveIndyCalc
                                 AccessToken = loginResponse.AccessToken,
                                 RefreshToken = loginResponse.RefreshToken,
                                 ExpiresIn = loginResponse.ExpiresIn,
-                                TokenType = loginResponse.TokenType
+                                TokenType = loginResponse.TokenType,
+                                IssuedAt = loginResponse.IssuedAt
                             }
                         };
 
@@ -144,6 +145,7 @@ namespace EveIndyCalc
         public string RefreshToken { get; set; } = "";
         public int ExpiresIn { get; set; }
         public string TokenType { get; set; } = "";
+        public DateTime IssuedAt { get; set; }
         public UserResponse User { get; set; } = new();
     }
 
