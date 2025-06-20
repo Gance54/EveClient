@@ -141,10 +141,7 @@ namespace EveIndyCalc
     {
         public string AccessToken { get; set; } = "";
         public string RefreshToken { get; set; } = "";
-        public int AccessTokenExpiresIn { get; set; }
-        public int RefreshTokenExpiresIn { get; set; }
         public string TokenType { get; set; } = "";
-        public DateTime IssuedAt { get; set; }
         public UserResponse User { get; set; } = new();
     }
 
