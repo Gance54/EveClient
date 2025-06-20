@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Security.Cryptography;
+using IndyMindy;
 
 namespace EveIndyCalc
 {
@@ -68,7 +69,7 @@ namespace EveIndyCalc
             try
             {
                 // Send registration request to server
-                var response = await http.PostAsync("http://localhost:5000/api/account/register", content);
+                var response = await http.PostAsync(ApiConfig.RegisterEndpoint, content);
 
                 if (response.IsSuccessStatusCode)
                 {

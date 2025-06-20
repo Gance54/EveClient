@@ -38,7 +38,7 @@ namespace EveIndyCalc
         // for REST comm test
         private static readonly HttpClient _httpClient = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:5000")
+            BaseAddress = new Uri(ApiConfig.BaseUrl)
         };
 
         public MainWindow()
@@ -346,37 +346,13 @@ namespace EveIndyCalc
             LogoutButton.Visibility = (isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private /* async */ void LoginButton_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Simulated backend login result with dummy tokens
-            var dummyTokens = new TokenInfo
-            {
-                AccessToken = "dummy_access_token_" + Guid.NewGuid().ToString("N"),
-                RefreshToken = "dummy_refresh_token_" + Guid.NewGuid().ToString("N"),
-                ExpiresIn = 3600, // 1 hour
-                TokenType = "Bearer"
-                // IssuedAt defaults to DateTime.UtcNow
-                // ExpiresAt is calculated automatically
-            };
-
-            var dummyUser = new UserContext
-            {
-                Email = "dummy@example.com",
-                AuthToken = "dummy_token_123",
-                IsSubscribed = true,
-                Characters = new List<EveCharacterContext>(), // No characters yet
-                Tokens = dummyTokens
-            };
-
-            // Set as current user session
-            SessionManager.CurrentUser = dummyUser;
-
-            // Save session to persist across restarts
-            SessionPersistence.SaveSession(dummyUser);
-
+            var loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
+            
+            // Redraw UI after login attempt (whether successful or not)
             RedrawUI();
-
-            MessageBox.Show($"Logged in as {dummyUser.Email} (no characters linked yet).\nAccess Token expires: {dummyTokens.ExpiresAt:yyyy-MM-dd HH:mm:ss} UTC");
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)

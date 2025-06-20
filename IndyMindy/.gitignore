@@ -27,9 +27,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-# Visual Studio 2015/2017 cache/options directory
-.vs/
-
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
