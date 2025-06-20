@@ -63,7 +63,18 @@ namespace EveIndyCalc
             if (savedUser != null)
             {
                 SessionManager.CurrentUser = savedUser;
-                System.Diagnostics.Debug.WriteLine($"Loaded session for user: {savedUser.Email}");
+                
+                // Validate tokens and clean expired session
+                SessionManager.ValidateAndCleanSession();
+                
+                if (SessionManager.CurrentUser != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Loaded session for user: {savedUser.Email}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Session was expired and cleared.");
+                }
             }
         }
 
@@ -332,10 +343,10 @@ namespace EveIndyCalc
         private void RedrawUI()
         {
             var user = IndyMindy.SessionManager.CurrentUser;
-            bool isLoggedIn = user != null;
-            bool isSubscribed = isLoggedIn && user.IsSubscribed;
+            bool isLoggedIn = user?.IsLoggedIn == true;
+            bool isSubscribed = user?.IsActiveSubscriber == true;
 
-            OpenProductionPlannerButton.Visibility = (isLoggedIn && isSubscribed) ? Visibility.Visible : Visibility.Collapsed;
+            OpenProductionPlannerButton.Visibility = (isSubscribed) ? Visibility.Visible : Visibility.Collapsed;
             LoginButton.Visibility = (!isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
             RegisterButton.Visibility = (!isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
             LogoutButton.Visibility = (isLoggedIn) ? Visibility.Visible : Visibility.Collapsed;
@@ -365,8 +376,7 @@ namespace EveIndyCalc
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            SessionPersistence.ClearSession();
-            SessionManager.CurrentUser = null;
+            SessionManager.ClearSession();
             RedrawUI();
             MessageBox.Show("You have been logged out.");
         }

@@ -52,6 +52,9 @@ namespace IndyMindy
         public List<EveCharacterContext> Characters { get; set; } = new();
         public ProductionPlanner Planner { get; set; } = new();
         public TokenInfo Tokens { get; set; }
+
+        public bool IsLoggedIn => Tokens != null && !Tokens.IsExpired;
+        public bool IsActiveSubscriber => IsLoggedIn && IsSubscribed;
     }
 
     public static class SessionManager
@@ -69,6 +72,43 @@ namespace IndyMindy
                     SessionPersistence.SaveSession(_currentUser);
                 }
             }
+        }
+
+        public static bool IsSessionValid()
+        {
+            if (CurrentUser?.Tokens == null)
+                return false;
+
+            // Check if the main user token is expired
+            if (CurrentUser.Tokens.IsExpired)
+                return false;
+
+            // Check if any character tokens are expired
+            if (CurrentUser.Characters != null)
+            {
+                foreach (var character in CurrentUser.Characters)
+                {
+                    if (character.TokenExpiration <= DateTime.UtcNow)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static void ValidateAndCleanSession()
+        {
+            if (!IsSessionValid())
+            {
+                // Clear expired session
+                ClearSession();
+            }
+        }
+
+        public static void ClearSession()
+        {
+            _currentUser = null;
+            SessionPersistence.ClearSession();
         }
 
         public static void AddCharacter(EveCharacterContext character)
