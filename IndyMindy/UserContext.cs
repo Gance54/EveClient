@@ -37,6 +37,7 @@ namespace IndyMindy
 
     public class UserContext
     {
+        public int UserId { get; set; }
         public string Email { get; set; }
         public string AuthToken { get; set; }
         public bool IsSubscribed { get; set; }
@@ -46,6 +47,12 @@ namespace IndyMindy
 
         public bool IsLoggedIn => Tokens != null;
         public bool IsActiveSubscriber => IsLoggedIn && IsSubscribed;
+    }
+
+    public class SessionFileData
+    {
+        public int UserId { get; set; }
+        public TokenInfo Tokens { get; set; }
     }
 
     public static class SessionManager
@@ -143,23 +150,21 @@ namespace IndyMindy
         {
             try
             {
-                // Ensure directory exists
                 var directory = Path.GetDirectoryName(SessionFilePath);
                 if (!Directory.Exists(directory))
-                {
                     Directory.CreateDirectory(directory);
-                }
 
-                // Serialize and save
-                var json = JsonSerializer.Serialize(user, new JsonSerializerOptions 
-                { 
-                    WriteIndented = true 
-                });
+                var sessionData = new SessionFileData
+                {
+                    UserId = user.UserId,
+                    Tokens = user.Tokens
+                };
+
+                var json = JsonSerializer.Serialize(sessionData, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SessionFilePath, json);
             }
             catch (Exception ex)
             {
-                // Log error or handle as needed
                 System.Diagnostics.Debug.WriteLine($"Failed to save session: {ex.Message}");
             }
         }
@@ -172,12 +177,17 @@ namespace IndyMindy
                     return null;
 
                 var json = File.ReadAllText(SessionFilePath);
-                var user = JsonSerializer.Deserialize<UserContext>(json);
-                return user;
+                var sessionData = JsonSerializer.Deserialize<SessionFileData>(json);
+
+                return new UserContext
+                {
+                    UserId = sessionData.UserId,
+                    Tokens = sessionData.Tokens
+                    // All other properties will be null/default and can be filled after backend calls
+                };
             }
             catch (Exception ex)
             {
-                // Log error or handle as needed
                 System.Diagnostics.Debug.WriteLine($"Failed to load session: {ex.Message}");
                 return null;
             }

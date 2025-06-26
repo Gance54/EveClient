@@ -71,6 +71,7 @@ namespace EveIndyCalc
                         // Create user context with real tokens
                         var userContext = new UserContext
                         {
+                            UserId = loginResponse.User.Id,
                             Email = loginResponse.User.Email,
                             AuthToken = loginResponse.AccessToken,
                             IsSubscribed = loginResponse.User.IsSubscribed,
@@ -152,4 +153,4 @@ namespace EveIndyCalc
         public bool IsSubscribed { get; set; }
         public DateTime CreatedAt { get; set; }
     }
-} 
+}
