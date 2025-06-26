@@ -60,7 +60,7 @@ namespace IndyMindy
     {
         private static UserContext _currentUser;
         private static readonly HttpClient http = new();
-        public static string VerifyTokenEndpoint = "http://localhost:5000/api/account/verify-token";
+        public static string VerifyTokenEndpoint = $"{ApiConfig.ApiBaseUrl}/account/verify-token";
         
         public static UserContext CurrentUser 
         { 
