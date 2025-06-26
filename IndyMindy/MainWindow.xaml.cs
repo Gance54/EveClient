@@ -369,6 +369,21 @@ namespace EveIndyCalc
             RedrawUI();
             MessageBox.Show("You have been logged out.");
         }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadExistingSession();
+            if (SessionManager.CurrentUser != null)
+            {
+                bool valid = await SessionManager.VerifyTokenAsync();
+                if (!valid)
+                {
+                    SessionManager.ClearSession();
+                    MessageBox.Show("Session expired or invalid. Please log in again.", "Session Invalid", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            RedrawUI();
+        }
     }
 
     public class DepthToMarginConverter : IValueConverter

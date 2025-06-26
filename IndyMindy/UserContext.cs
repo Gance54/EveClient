@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace IndyMindy
 {
@@ -58,6 +59,8 @@ namespace IndyMindy
     public static class SessionManager
     {
         private static UserContext _currentUser;
+        private static readonly HttpClient http = new();
+        public static string VerifyTokenEndpoint = "http://localhost:5000/api/account/verify-token";
         
         public static UserContext CurrentUser 
         { 
@@ -69,6 +72,25 @@ namespace IndyMindy
                 {
                     SessionPersistence.SaveSession(_currentUser);
                 }
+            }
+        }
+
+        public static async Task<bool> VerifyTokenAsync()
+        {
+            if (CurrentUser?.Tokens?.AccessToken == null)
+                return false;
+
+            var payload = new { Token = CurrentUser.Tokens.AccessToken };
+            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await http.PostAsync(VerifyTokenEndpoint, content);
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
             }
         }
 
