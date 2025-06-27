@@ -7,7 +7,8 @@ namespace IndyMindy.Services
     {
         Task<LoginResponse> LoginAsync(LoginRequest request);
         Task<RegisterResponse> RegisterAsync(RegisterRequest request);
-        Task<UserInfo> VerifyTokenAsync(string token);
+        Task<TokenVerificationResponse> VerifyTokenAsync(string token);
+        Task<UserInfo> GetUserAsync(int userId, string token);
     }
 
     public class AccountService : IAccountService
@@ -29,10 +30,16 @@ namespace IndyMindy.Services
             return await _httpService.PostAsync<RegisterResponse>("/api/account/register", request);
         }
 
-        public async Task<UserInfo> VerifyTokenAsync(string token)
+        public async Task<TokenVerificationResponse> VerifyTokenAsync(string token)
         {
             var request = new { Token = token };
-            return await _httpService.PostAsync<UserInfo>("/api/account/verify-token", request);
+            return await _httpService.PostAsync<TokenVerificationResponse>("/api/account/verify-token", request);
+        }
+
+        public async Task<UserInfo> GetUserAsync(int userId, string token)
+        {
+            var request = new { UserId = userId, Token = token };
+            return await _httpService.PostAsync<UserInfo>("/api/account/get-user", request);
         }
     }
 
@@ -50,6 +57,7 @@ namespace IndyMindy.Services
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
         public string TokenType { get; set; }
+        public UserInfo User { get; set; }
     }
 
     public class RegisterRequest
@@ -68,9 +76,16 @@ namespace IndyMindy.Services
         public string TokenType { get; set; }
     }
 
-    public class UserInfo
+    public class TokenVerificationResponse
     {
         public int UserId { get; set; }
-        public string Username { get; set; }
+    }
+
+    public class UserInfo
+    {
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public bool IsSubscribed { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 } 

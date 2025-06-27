@@ -385,10 +385,34 @@ namespace EveIndyCalc
             MessageBox.Show("HTTP debug log cleared", "Debug Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        public static void CheckSubscriptionStatus()
+        {
+            var user = SessionManager.CurrentUser;
+            if (user == null)
+            {
+                MessageBox.Show("No user logged in", "Subscription Status", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var status = $"User: {user.Email}\n" +
+                        $"User ID: {user.UserId}\n" +
+                        $"Is Logged In: {user.IsLoggedIn}\n" +
+                        $"Is Subscribed: {user.IsSubscribed}\n" +
+                        $"Is Active Subscriber: {user.IsActiveSubscriber}\n" +
+                        $"Has Tokens: {user.Tokens != null}";
+
+            MessageBox.Show(status, "Subscription Status", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Don't reload session or re-verify token since it's already been handled by the splash window
-            // Just redraw the UI based on the current session state
+            // Refresh user data to get current subscription status from backend
+            if (SessionManager.CurrentUser != null)
+            {
+                await SessionManager.RefreshUserDataAsync();
+            }
+            
+            // Redraw UI based on the current session state
             RedrawUI();
         }
     }

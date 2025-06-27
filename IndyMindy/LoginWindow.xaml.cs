@@ -64,7 +64,7 @@ namespace EveIndyCalc
                         UserId = loginResponse.UserId,
                         Email = loginResponse.Email,
                         AuthToken = loginResponse.AccessToken,
-                        IsSubscribed = false, // TODO: Get from backend
+                        IsSubscribed = loginResponse.User?.IsSubscribed ?? false,
                         Characters = new List<EveCharacterContext>(),
                         Tokens = new TokenInfo
                         {

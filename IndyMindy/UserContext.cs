@@ -88,8 +88,37 @@ namespace IndyMindy
 
             try
             {
-                var userInfo = await _accountService.VerifyTokenAsync(CurrentUser.Tokens.AccessToken);
-                return userInfo != null;
+                var response = await _accountService.VerifyTokenAsync(CurrentUser.Tokens.AccessToken);
+                return response != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> RefreshUserDataAsync()
+        {
+            if (CurrentUser?.Tokens?.AccessToken == null)
+                return false;
+
+            try
+            {
+                // First verify the token
+                var tokenResponse = await _accountService.VerifyTokenAsync(CurrentUser.Tokens.AccessToken);
+                if (tokenResponse == null)
+                    return false;
+
+                // Then fetch user data
+                var userInfo = await _accountService.GetUserAsync(tokenResponse.UserId, CurrentUser.Tokens.AccessToken);
+                if (userInfo != null)
+                {
+                    // Update user data from backend (subscription status, etc.)
+                    CurrentUser.Email = userInfo.Email;
+                    CurrentUser.IsSubscribed = userInfo.IsSubscribed;
+                    return true;
+                }
+                return false;
             }
             catch
             {
