@@ -31,19 +31,8 @@ namespace IndyMindy.Services
 
         public async Task<UserInfo> VerifyTokenAsync(string token)
         {
-            System.Diagnostics.Debug.WriteLine($"AccountService.VerifyTokenAsync: Sending request with token: {token.Substring(0, Math.Min(20, token.Length))}...");
             var request = new { Token = token };
-            try
-            {
-                var result = await _httpService.PostAsync<UserInfo>("/api/account/verify-token", request);
-                System.Diagnostics.Debug.WriteLine($"AccountService.VerifyTokenAsync: Success - UserId: {result?.UserId}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"AccountService.VerifyTokenAsync: Exception: {ex.Message}");
-                throw;
-            }
+            return await _httpService.PostAsync<UserInfo>("/api/account/verify-token", request);
         }
     }
 

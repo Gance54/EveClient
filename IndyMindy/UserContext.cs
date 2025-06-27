@@ -84,22 +84,15 @@ namespace IndyMindy
         public static async Task<bool> VerifyTokenAsync()
         {
             if (CurrentUser?.Tokens?.AccessToken == null)
-            {
-                System.Diagnostics.Debug.WriteLine("VerifyTokenAsync: No access token found");
                 return false;
-            }
 
             try
             {
-                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Attempting to verify token: {CurrentUser.Tokens.AccessToken.Substring(0, Math.Min(20, CurrentUser.Tokens.AccessToken.Length))}...");
                 var userInfo = await _accountService.VerifyTokenAsync(CurrentUser.Tokens.AccessToken);
-                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Success - UserId: {userInfo?.UserId}");
                 return userInfo != null;
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Exception occurred: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Stack trace: {ex.StackTrace}");
                 return false;
             }
         }

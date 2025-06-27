@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Newtonsoft.Json;
 using IndyMindy;
+using IndyMindy.Services;
 
 namespace EveIndyCalc
 {
@@ -370,18 +371,24 @@ namespace EveIndyCalc
             MessageBox.Show("You have been logged out.");
         }
 
+        // Debug methods for HTTP traffic
+        public static void ToggleHttpDebugging()
+        {
+            HttpDebugger.IsEnabled = !HttpDebugger.IsEnabled;
+            var status = HttpDebugger.IsEnabled ? "enabled" : "disabled";
+            MessageBox.Show($"HTTP debugging {status}", "Debug Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public static void ClearHttpDebugLog()
+        {
+            HttpDebugger.ClearLog();
+            MessageBox.Show("HTTP debug log cleared", "Debug Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadExistingSession();
-            if (SessionManager.CurrentUser != null)
-            {
-                bool valid = await SessionManager.VerifyTokenAsync();
-                if (!valid)
-                {
-                    SessionManager.ClearSession();
-                    MessageBox.Show("Session expired or invalid. Please log in again.", "Session Invalid", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
+            // Don't reload session or re-verify token since it's already been handled by the splash window
+            // Just redraw the UI based on the current session state
             RedrawUI();
         }
     }
