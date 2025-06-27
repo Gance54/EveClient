@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
 using System.Net.Http;
+using IndyMindy.Services;
 
 namespace IndyMindy
 {
@@ -59,8 +60,13 @@ namespace IndyMindy
     public static class SessionManager
     {
         private static UserContext _currentUser;
-        private static readonly HttpClient http = new();
-        public static string VerifyTokenEndpoint = $"{ApiConfig.ApiBaseUrl}/account/verify-token";
+        private static readonly IAccountService _accountService;
+        
+        static SessionManager()
+        {
+            var httpService = new HttpService();
+            _accountService = new AccountService(httpService);
+        }
         
         public static UserContext CurrentUser 
         { 
@@ -78,18 +84,22 @@ namespace IndyMindy
         public static async Task<bool> VerifyTokenAsync()
         {
             if (CurrentUser?.Tokens?.AccessToken == null)
+            {
+                System.Diagnostics.Debug.WriteLine("VerifyTokenAsync: No access token found");
                 return false;
-
-            var payload = new { Token = CurrentUser.Tokens.AccessToken };
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+            }
 
             try
             {
-                var response = await http.PostAsync(VerifyTokenEndpoint, content);
-                return response.IsSuccessStatusCode;
+                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Attempting to verify token: {CurrentUser.Tokens.AccessToken.Substring(0, Math.Min(20, CurrentUser.Tokens.AccessToken.Length))}...");
+                var userInfo = await _accountService.VerifyTokenAsync(CurrentUser.Tokens.AccessToken);
+                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Success - UserId: {userInfo?.UserId}");
+                return userInfo != null;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Exception occurred: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"VerifyTokenAsync: Stack trace: {ex.StackTrace}");
                 return false;
             }
         }

@@ -1,20 +1,21 @@
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Security.Cryptography;
+using System.Text;
 using IndyMindy;
+using IndyMindy.Services;
 
 namespace EveIndyCalc
 {
     public partial class LoginWindow : Window
     {
-        private static readonly HttpClient http = new();
+        private readonly IAccountService _accountService;
 
         public LoginWindow()
         {
             InitializeComponent();
+            var httpService = new HttpService();
+            _accountService = new AccountService(httpService);
         }
 
         private string HashPassword(string password)
@@ -44,65 +45,45 @@ namespace EveIndyCalc
             // Hash the password before sending
             string hashedPassword = HashPassword(password);
 
-            // Create payload for the server
-            var payload = new
-            {
-                email = email,
-                password = hashedPassword
-            };
-
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-
             try
             {
-                // Send login request to server
-                var response = await http.PostAsync(ApiConfig.LoginEndpoint, content);
-
-                if (response.IsSuccessStatusCode)
+                // Send login request using the service
+                var request = new LoginRequest
                 {
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var loginResponse = JsonSerializer.Deserialize<LoginResponse>(jsonResponse, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
+                    Email = email,
+                    Password = hashedPassword
+                };
 
-                    if (loginResponse != null)
+                var loginResponse = await _accountService.LoginAsync(request);
+
+                if (loginResponse != null)
+                {
+                    // Create user context with real tokens
+                    var userContext = new UserContext
                     {
-                        // Create user context with real tokens
-                        var userContext = new UserContext
+                        UserId = loginResponse.UserId,
+                        Email = loginResponse.Email,
+                        AuthToken = loginResponse.AccessToken,
+                        IsSubscribed = false, // TODO: Get from backend
+                        Characters = new List<EveCharacterContext>(),
+                        Tokens = new TokenInfo
                         {
-                            UserId = loginResponse.User.Id,
-                            Email = loginResponse.User.Email,
-                            AuthToken = loginResponse.AccessToken,
-                            IsSubscribed = loginResponse.User.IsSubscribed,
-                            Characters = new List<EveCharacterContext>(),
-                            Tokens = new TokenInfo
-                            {
-                                AccessToken = loginResponse.AccessToken,
-                                RefreshToken = loginResponse.RefreshToken,
-                                TokenType = loginResponse.TokenType,
-                            }
-                        };
+                            AccessToken = loginResponse.AccessToken,
+                            RefreshToken = loginResponse.RefreshToken,
+                            TokenType = loginResponse.TokenType,
+                        }
+                    };
 
-                        // Set as current user session
-                        SessionManager.CurrentUser = userContext;
+                    // Set as current user session
+                    SessionManager.CurrentUser = userContext;
 
-                        // Save session to persist across restarts
-                        SessionPersistence.SaveSession(userContext);
-
-                        MessageBox.Show($"Login successful! Welcome back, {userContext.Email}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        Close();
-                    }
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    StatusText.Text = $"Login failed: {error}";
+                    MessageBox.Show($"Login successful! Welcome back, {userContext.Email}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
                 }
             }
-            catch (HttpRequestException httpEx)
+            catch (HttpServiceException ex)
             {
-                StatusText.Text = $"Connection error: {httpEx.Message}";
+                StatusText.Text = $"Login failed: {ex.Message}";
             }
             catch (Exception ex)
             {
@@ -135,22 +116,5 @@ namespace EveIndyCalc
             registrationWindow.Show();
             Close();
         }
-    }
-
-    // Response models for deserialization
-    public class LoginResponse
-    {
-        public string AccessToken { get; set; } = "";
-        public string RefreshToken { get; set; } = "";
-        public string TokenType { get; set; } = "";
-        public UserResponse User { get; set; } = new();
-    }
-
-    public class UserResponse
-    {
-        public int Id { get; set; }
-        public string Email { get; set; } = "";
-        public bool IsSubscribed { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }

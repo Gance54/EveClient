@@ -1,20 +1,21 @@
-﻿using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Security.Cryptography;
+using System.Text;
 using IndyMindy;
+using IndyMindy.Services;
 
 namespace EveIndyCalc
 {
     public partial class RegistrationWindow : Window
     {
-        private static readonly HttpClient http = new();
+        private readonly IAccountService _accountService;
 
         public RegistrationWindow()
         {
             InitializeComponent();
+            var httpService = new HttpService();
+            _accountService = new AccountService(httpService);
         }
 
         private string HashPassword(string password)
@@ -57,33 +58,27 @@ namespace EveIndyCalc
             // Hash the password before sending
             string hashedPassword = HashPassword(password);
 
-            // Create payload for the server
-            var payload = new
-            {
-                email = email,
-                password = hashedPassword
-            };
-
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-
             try
             {
-                // Send registration request to server
-                var response = await http.PostAsync(ApiConfig.RegisterEndpoint, content);
-                if (response.IsSuccessStatusCode)
+                // Send registration request using the service
+                var request = new RegisterRequest
+                {
+                    Email = email,
+                    Password = hashedPassword,
+                    ConfirmPassword = hashedPassword
+                };
+
+                var response = await _accountService.RegisterAsync(request);
+
+                if (response != null)
                 {
                     MessageBox.Show("Account created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     Close(); // Close the registration window
                 }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    StatusText.Text = $"Registration failed: {error}";
-                }
             }
-            catch (HttpRequestException httpEx)
+            catch (HttpServiceException ex)
             {
-                StatusText.Text = $"Connection error: {httpEx.Message}";
+                StatusText.Text = $"Registration failed: {ex.Message}";
             }
             catch (Exception ex)
             {
